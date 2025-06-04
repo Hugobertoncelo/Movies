@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import api from "../../services/api";
+import { getMovieVideos } from "../../services/getData";
 import { Container, Background } from "./styles";
 
 function Modal({ movieId, setShowModal }) {
@@ -8,11 +8,7 @@ function Modal({ movieId, setShowModal }) {
 
   useEffect(() => {
     async function getMovies() {
-      const {
-        data: { results },
-      } = await api.get(`/movie/${movieId}/videos`);
-
-      setMovie(results[0]);
+      setMovie(await getMovieVideos(movieId));
     }
 
     getMovies();
@@ -23,7 +19,7 @@ function Modal({ movieId, setShowModal }) {
       {movie && (
         <Container>
           <iframe
-            src={`https://www.youtube.com/embed/${movie.key}`}
+            src={`https://www.youtube.com/embed/${movie[0].key}`}
             title="Youtube Video Player"
             height="500px"
             width="100%"

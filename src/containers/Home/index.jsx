@@ -1,4 +1,3 @@
-import api from "../../services/api";
 import {
   Background,
   Info,
@@ -12,6 +11,13 @@ import Slider from "../../components/Slider";
 import { getImages } from "../../utils/getImages";
 import Modal from "../../components/Modal";
 import { useNavigate } from "react-router-dom";
+import {
+  getMovies,
+  getPopularSeries,
+  getTopMovies,
+  getTopPeople,
+  getTopSeries,
+} from "../../services/getData";
 
 function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -23,51 +29,24 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function getMovies() {
-      const {
-        data: { results },
-      } = await api.get("/movie/popular");
-
-      setMovie(results[0]);
+    async function getAllData() {
+      Promise.all([
+        getMovies(),
+        getTopMovies(),
+        getTopSeries(),
+        getPopularSeries(),
+        getTopPeople(),
+      ])
+        .then(([movie, topMovies, topSeries, popularSeries, topPeople]) => {
+          setMovie(movie);
+          setTopMovies(topMovies);
+          setTopSeries(topSeries);
+          setPopularSeries(popularSeries);
+          setTopPeople(topPeople);
+        })
+        .catch((err) => console.error(err));
     }
-
-    async function getTopMovies() {
-      const {
-        data: { results },
-      } = await api.get("/movie/top_rated");
-
-      setTopMovies(results);
-    }
-
-    async function getTopSeries() {
-      const {
-        data: { results },
-      } = await api.get("/tv/top_rated");
-
-      setTopSeries(results);
-    }
-
-    async function getPopularSeries() {
-      const {
-        data: { results },
-      } = await api.get("/tv/popular");
-
-      setPopularSeries(results);
-    }
-
-    async function getTopPeople() {
-      const {
-        data: { results },
-      } = await api.get("/person/popular");
-
-      setTopPeople(results);
-    }
-
-    getMovies();
-    getTopMovies();
-    getTopSeries();
-    getPopularSeries();
-    getTopPeople();
+    getAllData();
   }, []);
 
   return (

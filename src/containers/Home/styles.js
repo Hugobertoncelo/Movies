@@ -1,4 +1,13 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const scale = keyframes`
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+`;
 
 export const Background = styled.div` 
   background-image: url(${props => props.img});
@@ -8,6 +17,8 @@ export const Background = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden; 
 
   &::before {
     content: '';
@@ -17,6 +28,23 @@ export const Background = styled.div`
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1; 
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background-image: linear-gradient(to top, #0f0f0f, rgba(0, 0, 0, 0));
+    z-index: 2; 
+  }
+
+  * {
+    position: relative;
+    z-index: 3;
   }
 `;
 
@@ -29,7 +57,7 @@ export const Container = styled.div`
 `;
 
 export const Info = styled.div`
-  z-index: 2;
+  z-index: 3;
   padding: 20px;
   width: 50%;
 
@@ -49,11 +77,12 @@ export const Info = styled.div`
 `;
 
 export const Poster = styled.div`
-  z-index: 2;
+  z-index: 3;
 
   img {
     width: 400px;
     border-radius: 30px;
+    animation: ${scale} 0.5s linear;
   }
 `;
 
